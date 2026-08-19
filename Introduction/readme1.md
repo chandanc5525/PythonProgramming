@@ -1,6 +1,6 @@
-# Python Programming — Part 2
+# Python Programming — Session 02
 
-This part continues the **Introduction to Python Programming** guide and focuses on **control flow and program execution**. It builds on the fundamentals covered in Part 1, including data types, data structures, mathematical operators, and logical operators. fileciteturn2file0L32-L40
+
 
 ---
 
