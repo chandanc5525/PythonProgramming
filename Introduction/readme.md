@@ -1,6 +1,4 @@
-# Introduction to Python Programming
-
-Welcome to the **Introduction to Python Programming** repository. This beginner-friendly guide introduces fundamental Python concepts, including data types, data structures, mathematical operators, logical operators, and basic execution.
+# Python Programming — Session 01
 
 ---
 
