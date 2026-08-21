@@ -1,19 +1,19 @@
 # 03 — Displaying Data & Building Charts
 
-## 🎯 What You'll Learn
+## What You'll Learn
 - Rendering pandas DataFrames as static and interactive tables
 - Streamlit's built-in chart functions vs. Matplotlib/Plotly integration
 - Editable data tables with `st.data_editor`
 
 ---
 
-## 📌 The Scenario
+## The Scenario
 
 PyRail's ops team wants to see a live table of today's bookings, sortable and searchable, plus a bar chart of tickets sold per route. They also want to be able to **manually correct a row** (e.g., fix a passenger's typo'd name) directly in the browser — no re-uploading a CSV.
 
 ---
 
-## 🧠 Logic: `st.write` vs `st.dataframe` vs `st.table`
+## Logic: `st.write` vs `st.dataframe` vs `st.table`
 
 | Function | Interactivity | Best for |
 |---|---|---|
@@ -26,7 +26,7 @@ The logic: **use the least powerful tool that satisfies the need.** `st.datafram
 
 ---
 
-## 💻 Displaying Data
+## Displaying Data
 
 ```python
 import streamlit as st
@@ -52,7 +52,7 @@ st.dataframe(
 )
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `column_config` lets you re-label columns, control number/date formatting, and even embed progress bars or images **without modifying the underlying DataFrame** — the config is purely presentational, keeping your data and its display separate.
 - `hide_index=True` removes the default 0,1,2… row index, which is almost always what you want for business data that already has a meaningful ID column (`ticket_id` here).
@@ -60,7 +60,7 @@ st.dataframe(
 
 ---
 
-## 💻 Editable Tables
+## Editable Tables
 
 ```python
 st.subheader("Correct a Booking")
@@ -73,7 +73,7 @@ if not edited.equals(bookings):
         st.success("Bookings updated!")
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `num_rows="dynamic"` allows the user to add/delete rows via +/– controls in the UI; `"fixed"` (the default) locks the row count.
 - Comparing `edited.equals(bookings)` is how you detect "did anything actually change" — necessary because `st.data_editor` re-returns a DataFrame **every single rerun**, whether or not the user touched anything, so you can't just assume "it returned something, so save it."
@@ -81,7 +81,7 @@ if not edited.equals(bookings):
 
 ---
 
-## 💻 Built-in Quick Charts
+## Built-in Quick Charts
 
 ```python
 import numpy as np
@@ -102,7 +102,7 @@ st.line_chart(trend.set_index("day"))
 
 ---
 
-## 💻 Full Control with Plotly / Matplotlib
+## Full Control with Plotly / Matplotlib
 
 When the quick charts aren't expressive enough (custom tooltips, multiple axes, specific color scales), drop down to a real charting library:
 
@@ -114,14 +114,14 @@ fig = px.pie(bookings, names="route", values="fare", title="Revenue Share by Rou
 st.plotly_chart(fig, use_container_width=True)
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `st.plotly_chart(fig)` simply **embeds the Plotly figure object** into the page — you build the chart exactly as you would in a Jupyter notebook, then hand it to Streamlit for rendering. This "build with the library you already know, then wrap in one Streamlit call" pattern applies identically to `st.pyplot(fig)` for Matplotlib and `st.altair_chart(chart)` for Altair.
 - Plotly charts are interactive by default (hover tooltips, zoom) **without any extra code**, which is often why teams choose it over Matplotlib for dashboards.
 
 ---
 
-## 📝 Try It Yourself
+## Try It Yourself
 
 1. Load the `bookings` DataFrame and add a `st.metric` showing total revenue, computed with `bookings["fare"].sum()`.
 2. Add a `st.selectbox` to filter `bookings` by `status` before displaying the table (hint: `bookings[bookings["status"] == chosen_status]`).

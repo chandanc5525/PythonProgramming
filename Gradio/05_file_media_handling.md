@@ -1,19 +1,19 @@
 # 05 — File, Image, Audio & Video Handling
 
-## 🎯 What You'll Learn
+## What You'll Learn
 - Image components for upload, processing, and display
 - File upload/download for arbitrary documents
 - Audio and video components — a quick tour, since Gradio was built with these as first-class citizens
 
 ---
 
-## 📌 The Scenario
+## The Scenario
 
 PyRail wants an "Upload your ticket photo" feature that lets a passenger snap a photo of a printed ticket, have it auto-cropped/enhanced, and get a downloadable cleaned-up PDF/image back. This kind of media-in, media-out workflow is exactly what Gradio was originally built for — it's a strong differentiator versus most other Python UI tools.
 
 ---
 
-## 💻 Image In, Image Out
+## Image In, Image Out
 
 ```python
 import gradio as gr
@@ -33,13 +33,13 @@ demo = gr.Interface(
         gr.Slider(0.5, 2.0, value=1.2, label="Brightness"),
     ],
     outputs=gr.Image(label="Enhanced photo"),
-    title="🎫 Ticket Photo Enhancer",
+    title="Ticket Photo Enhancer",
 )
 
 demo.launch()
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `gr.Image(type="numpy")` tells Gradio to hand your function a **NumPy array** (height × width × channels) — the other common options are `type="pil"` (a `PIL.Image.Image` object) and `type="filepath"` (a string path to a temp file on disk). Choosing the right type avoids unnecessary conversions inside your function — e.g., if you're using OpenCV, you'd typically want `numpy`; if you're using PIL-based operations, `pil` avoids a manual `Image.fromarray` step.
 - The function must **return the same kind of object** the output `gr.Image` expects to display — Gradio is fairly forgiving and auto-converts between NumPy/PIL in most cases, but staying consistent avoids subtle bugs.
@@ -47,7 +47,7 @@ demo.launch()
 
 ---
 
-## 💻 Sketch/Annotation Input
+## Sketch/Annotation Input
 
 ```python
 import gradio as gr
@@ -69,7 +69,7 @@ demo.launch()
 
 ---
 
-## 💻 Generic File Upload & Download
+## Generic File Upload & Download
 
 ```python
 import gradio as gr
@@ -94,7 +94,7 @@ demo = gr.Interface(
 demo.launch()
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `gr.File` gives your function a **temp file object** with a `.name` attribute pointing to where Gradio saved the uploaded bytes on disk — unlike Gradio's image components, generic files are always given to you via a real filesystem path rather than an in-memory array, since arbitrary file types (CSV, PDF, ZIP) don't have a universal in-memory Python representation the way images do.
 - Returning a **file path** (`output_path`) for a `gr.File` output tells Gradio "serve this file for download" — it automatically handles the download button and correct filename, similar in spirit to Streamlit's `st.download_button`, but here triggered by simply returning a path string rather than raw bytes.
@@ -102,7 +102,7 @@ demo.launch()
 
 ---
 
-## 💻 Audio & Video — Quick Tour
+## Audio & Video — Quick Tour
 
 ```python
 import gradio as gr
@@ -122,7 +122,7 @@ demo = gr.Interface(
 demo.launch()
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `gr.Audio` hands your function a **tuple** `(sample_rate, numpy_array)` by default — the same "give me the data as a native Python/NumPy structure" philosophy as images, so you can process it with `numpy`/`scipy`/`librosa` directly without manual file parsing.
 - `sources=["upload", "microphone"]` mirrors the image component's pattern — record live or upload a file, same component, same downstream function.
@@ -130,7 +130,7 @@ demo.launch()
 
 ---
 
-## 📝 Try It Yourself
+## Try It Yourself
 
 1. Extend `enhance_ticket_photo` to also accept a `gr.Slider` for contrast, using `ImageEnhance.Contrast`, and chain both adjustments.
 2. Build a "Route Map Uploader": accept an image of a route map, and use `gr.Image(type="filepath")` instead of `numpy` — inspect what your function receives and note the difference from the `numpy`/`pil` types.

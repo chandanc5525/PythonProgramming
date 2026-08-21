@@ -1,6 +1,6 @@
 # 01 — Introduction to Gradio & Environment Setup
 
-## 🎯 What You'll Learn
+## What You'll Learn
 - What Gradio is and the problem it solves
 - How Gradio's model differs from Streamlit's "rerun everything" approach
 - Installing Gradio and building your first `Interface`
@@ -8,7 +8,7 @@
 
 ---
 
-## 📌 The Scenario
+## The Scenario
 
 You've just trained a small machine learning model — say, a function that predicts a train ticket's fare given route distance and travel class. Your team wants to **try it interactively**: type in numbers, see a prediction, without writing a single line of frontend code, and ideally with a **public shareable link** they can test from their phones today.
 
@@ -16,7 +16,7 @@ This is exactly Gradio's home turf: **wrap any Python function in an interactive
 
 ---
 
-## 🧠 The Core Idea (Logic First)
+## The Core Idea (Logic First)
 
 Where Streamlit thinks in terms of "rerun the whole script on every interaction" (Module 01 of the Streamlit course), Gradio thinks in terms of **components wired to a Python function**:
 
@@ -29,7 +29,7 @@ This is much closer to a **traditional event-driven callback model** than Stream
 
 ---
 
-## 💻 Installation
+## Installation
 
 ```bash
 python -m venv venv
@@ -40,7 +40,7 @@ pip install gradio
 
 ---
 
-## 💻 Your First App
+## Your First App
 
 ```python
 import gradio as gr
@@ -67,7 +67,7 @@ python app.py
 
 Gradio starts a local server (usually `http://127.0.0.1:7860`) and opens it in your browser.
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `gr.Interface(fn=..., inputs=..., outputs=...)` is the **highest-level Gradio abstraction** — you give it a function and describe its inputs/outputs as a list of components, and it auto-generates a complete, reasonably polished UI (labels, a "Submit" button, a "Clear" button) without you touching layout code at all.
 - The **order** of `inputs` in the list must match the **order of parameters** in `greet(name, excited)` — Gradio calls your function positionally, `greet(textbox_value, checkbox_value)`.
@@ -76,7 +76,7 @@ Gradio starts a local server (usually `http://127.0.0.1:7860`) and opens it in y
 
 ---
 
-## 💻 Instant Public Sharing
+## Instant Public Sharing
 
 ```python
 demo.launch(share=True)
@@ -86,7 +86,7 @@ This prints a temporary public URL (`https://xxxxx.gradio.live`) that tunnels to
 
 ---
 
-## 📁 Recommended Project Structure
+## Recommended Project Structure
 
 ```
 gradio-course/
@@ -105,7 +105,7 @@ pillow
 
 ---
 
-## 📝 Try It Yourself
+## Try It Yourself
 
 1. Modify `greet` to also accept a `gr.Slider(0, 100, label="Excitement level")` and use it to add that many `!` characters to the greeting.
 2. Change `outputs` to `gr.Textbox(label="Greeting", lines=3)` and observe how component *arguments* (not just types) shape the UI.

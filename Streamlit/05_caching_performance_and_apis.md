@@ -1,19 +1,19 @@
 # 05 — Caching, Performance & Connecting to APIs/Databases
 
-## 🎯 What You'll Learn
+## What You'll Learn
 - Why the rerun model can silently make your app slow
 - `st.cache_data` vs `st.cache_resource` — what each is for and why they're different
 - Fetching live data from an external API or database safely
 
 ---
 
-## 📌 The Scenario
+## The Scenario
 
 PyRail Dashboards now loads a 500,000-row CSV of historical bookings and calls a live currency-conversion API to show fares in USD. On the first load this takes 4 seconds. The problem: because of the rerun model (Module 01), **that 4-second load re-executes every time the user touches any widget on the page** — including something as trivial as toggling a checkbox. Users will not tolerate a 4-second freeze on every click.
 
 ---
 
-## 🧠 Logic: Two Kinds of Expensive Things
+## Logic: Two Kinds of Expensive Things
 
 Streamlit distinguishes between two categories of "expensive" operations, because they need to be cached differently:
 
@@ -26,7 +26,7 @@ The core reasoning: `st.cache_data` returns a **new copy** of the cached value t
 
 ---
 
-## 💻 Caching Expensive Data Loading
+## Caching Expensive Data Loading
 
 ```python
 import streamlit as st
@@ -44,7 +44,7 @@ st.write(f"Loaded {len(df):,} rows.")
 st.dataframe(df.head())
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - The first time `load_bookings("data/bookings_history.csv")` runs, Streamlit executes the function body (the full 4-second sleep + read), then stores the result **keyed by the function's arguments**.
 - On every subsequent rerun — no matter what widget the user touched — calling `load_bookings("data/bookings_history.csv")` **again** with the *same argument* returns the cached result instantly, skipping the function body entirely.
@@ -53,7 +53,7 @@ st.dataframe(df.head())
 
 ---
 
-## 💻 Caching a Shared Resource (DB Connection)
+## Caching a Shared Resource (DB Connection)
 
 ```python
 import streamlit as st
@@ -68,14 +68,14 @@ bookings = pd.read_sql("SELECT * FROM bookings WHERE status = 'Confirmed'", conn
 st.dataframe(bookings)
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `check_same_thread=False` is needed because Streamlit may serve widget interactions from a different thread than the one that created the connection — a detail specific to how Streamlit's server dispatches script reruns.
 - Using `@st.cache_data` here (instead of `@st.cache_resource`) would be a bug: SQLite connection objects generally aren't safely copyable/picklable, and even if they were, you'd end up opening a *new* connection every cache key lookup instead of reusing one — defeating the purpose and potentially exhausting connections under load.
 
 ---
 
-## 💻 Cache Expiry & Manual Invalidation
+## Cache Expiry & Manual Invalidation
 
 ```python
 @st.cache_data(ttl=300)  # cache expires after 5 minutes
@@ -92,7 +92,7 @@ if st.button("Force refresh rate"):
     st.rerun()
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `ttl=300` (time-to-live, in seconds) means Streamlit automatically treats the cached value as stale after 5 minutes and re-runs the function on the next call — appropriate for data that changes slowly but does change (exchange rates, weather, leaderboards).
 - `.clear()` is a method Streamlit attaches to every `@st.cache_data`-decorated function, letting you manually invalidate its cache — useful for an explicit "Refresh" button rather than waiting on the TTL.
@@ -100,7 +100,7 @@ if st.button("Force refresh rate"):
 
 ---
 
-## 💻 Showing Progress on Long Operations
+## Showing Progress on Long Operations
 
 ```python
 import streamlit as st
@@ -120,7 +120,7 @@ if st.button("Run nightly reconciliation"):
 
 ---
 
-## 📝 Try It Yourself
+## Try It Yourself
 
 1. Wrap a `pd.read_csv` call for a large file in `@st.cache_data` and time the difference (using `time.time()`) between the first and second load.
 2. Deliberately cache a mutable object (a list) with `@st.cache_data`, mutate the *returned* list in your script, then call the cached function again — confirm the cache wasn't corrupted (this demonstrates the "copy" behavior).

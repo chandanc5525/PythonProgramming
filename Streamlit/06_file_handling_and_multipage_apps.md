@@ -1,19 +1,19 @@
 # 06 — File Uploads/Downloads & Multipage Applications
 
-## 🎯 What You'll Learn
+## What You'll Learn
 - Reading uploaded files directly into pandas without saving to disk
 - Letting users download generated data/reports
 - Structuring a real multipage app using the `pages/` convention and `st.navigation`
 
 ---
 
-## 📌 The Scenario
+## The Scenario
 
 PyRail's finance team wants to **upload a CSV of raw booking exports**, have the app clean/summarize it, and let them **download** a polished Excel report. Meanwhile, the whole PyRail Dashboards tool has grown — it now needs separate pages for "Bookings," "Revenue," and "Admin Settings," navigable from a sidebar, not crammed into one giant script.
 
 ---
 
-## 🧠 Logic: Uploaded Files Are In-Memory, Not On Disk
+## Logic: Uploaded Files Are In-Memory, Not On Disk
 
 ```python
 import streamlit as st
@@ -27,15 +27,15 @@ if uploaded is not None:
     st.dataframe(df.head())
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `st.file_uploader` returns `None` until a file is chosen, then an **`UploadedFile` object** — a file-like object (subclass of `BytesIO`) held **in memory**, not written to your server's disk automatically. This matters for both security (no stray files left behind) and simplicity (`pd.read_csv` accepts file-like objects directly, no temp-file juggling needed).
 - Because it behaves like a file object, most "read a file" functions across pandas, openpyxl, PyPDF2, etc. accept it directly.
-- ⚠️ **Gotcha**: an `UploadedFile`'s internal read-position is a pointer, like any stream — if you read it once (e.g., `pd.read_csv(uploaded)`), then try to read it *again* later in the same rerun, you'll get an empty result unless you call `uploaded.seek(0)` first to rewind it.
+- **Gotcha**: an `UploadedFile`'s internal read-position is a pointer, like any stream — if you read it once (e.g., `pd.read_csv(uploaded)`), then try to read it *again* later in the same rerun, you'll get an empty result unless you call `uploaded.seek(0)` first to rewind it.
 
 ---
 
-## 💻 Generating & Offering a Download
+## Generating & Offering a Download
 
 ```python
 import io
@@ -50,14 +50,14 @@ with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
     summary.to_excel(writer, index=False, sheet_name="Route Summary")
 
 st.download_button(
-    label="📥 Download Route Summary (Excel)",
+    label="Download Route Summary (Excel)",
     data=buffer.getvalue(),
     file_name="route_summary.xlsx",
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 )
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `io.BytesIO()` creates an **in-memory binary buffer** — writing the Excel file "into" this buffer instead of an actual disk path avoids leaving temp files around on the server, which matters a lot for a multi-user hosted app (you don't want User A's temp file colliding with User B's).
 - `st.download_button` needs raw `bytes` (`buffer.getvalue()`), a filename, and a correct MIME type so the browser knows how to handle the download and what icon/extension to show.
@@ -65,7 +65,7 @@ st.download_button(
 
 ---
 
-## 🧠 Logic: Structuring a Multipage App
+## Logic: Structuring a Multipage App
 
 Streamlit apps naturally sprawl. The modern, recommended structure uses explicit `Page` objects and `st.navigation`, giving you full control over grouping, icons, and ordering:
 
@@ -109,7 +109,7 @@ df = load_bookings("data/bookings_history.csv")
 st.dataframe(df, use_container_width=True)
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - Each entry in `pages/` is a **complete, independent Streamlit script** — Streamlit runs the *selected* page's script (and only that one) on each rerun, meaning navigating pages doesn't re-execute the code of pages you're not viewing.
 - `st.navigation({...})` accepts a dict mapping **section headers** to lists of `st.Page` objects, which is how you get grouped sidebar navigation (e.g., "Operations" vs "System" as separate labeled groups) instead of one flat list.
@@ -119,7 +119,7 @@ st.dataframe(df, use_container_width=True)
 
 ---
 
-## 📝 Try It Yourself
+## Try It Yourself
 
 1. Add a "Cancellations" page that filters `bookings_history.csv` down to `status == "Cancelled"` and shows a `st.metric` of the cancellation rate.
 2. On the Admin Settings page, add a text input for a "refresh interval" and store it in `st.session_state` — verify from the Bookings page that the value persists after switching pages.

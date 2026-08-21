@@ -1,6 +1,6 @@
 # 04 — Events, State & Interactivity
 
-## 🎯 What You'll Learn
+## What You'll Learn
 - The full event vocabulary (`.click`, `.change`, `.submit`, etc.) and when to use each
 - Chaining events and updating multiple outputs from one trigger
 - `gr.State` for data that should persist across interactions, per user session
@@ -8,13 +8,13 @@
 
 ---
 
-## 📌 The Scenario
+## The Scenario
 
 PyRail's booking tab needs three behaviors that go beyond a single button click: (1) the fare should update **live** as the class dropdown changes, (2) a running "cart" of booked tickets needs to persist across multiple additions without a database, and (3) selecting "Sleeper" class should **disable** the "Add Insurance" checkbox, since PyRail doesn't offer insurance on Sleeper class.
 
 ---
 
-## 🧠 Logic: The Event Vocabulary
+## Logic: The Event Vocabulary
 
 Every interactive Gradio component exposes **event methods** you can attach functions to — the ones you'll use constantly:
 
@@ -44,14 +44,14 @@ with gr.Blocks() as demo:
 demo.launch()
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - Attaching `.change()` to **both** `distance` and `travel_class`, pointing at the same function and same output, gives "live" fare updates without needing `live=True` on an `Interface` (which isn't available here anyway, since we're using `Blocks`) — each event is wired independently, but both happen to call the same handler.
 - This is more granular than Streamlit's rerun model: you're choosing **exactly** which interactions trigger **exactly** which function, rather than "everything reruns, figure out what changed yourself."
 
 ---
 
-## 💻 `gr.State` — Per-Session Data That Isn't a Visible Component
+## `gr.State` — Per-Session Data That Isn't a Visible Component
 
 ```python
 import gradio as gr
@@ -81,7 +81,7 @@ with gr.Blocks() as demo:
 demo.launch()
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `gr.State([])` creates an **invisible** component holding a Python object (here, a list) — it renders nothing in the UI but participates in the input/output wiring exactly like a visible component.
 - Crucially, `gr.State` is **per-browser-session** — if two people open the app simultaneously, each gets their own independent `cart_state`, never seeing each other's cart. This is Gradio's direct equivalent to Streamlit's `st.session_state`, just expressed as an explicit component you thread through function signatures rather than a global dict.
@@ -89,7 +89,7 @@ demo.launch()
 
 ---
 
-## 💻 `gr.update()` — Changing a Component's Properties, Not Just Its Value
+## `gr.update()` — Changing a Component's Properties, Not Just Its Value
 
 ```python
 import gradio as gr
@@ -108,27 +108,27 @@ with gr.Blocks() as demo:
 demo.launch()
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - A normal function return sets a component's **value**. `gr.update(...)` lets you instead reconfigure **any property** of a component — its interactivity, visibility, choices, label, and more — from inside an event handler.
 - Here, choosing "Sleeper" both **unchecks** and **disables** the insurance checkbox (business rule: no insurance on Sleeper), while any other class re-enables it — a UI behavior that would be awkward to express with a plain return value alone, since a plain `True`/`False` return can only set the checkbox's *value*, not its *enabled state*.
 
 ---
 
-## 💻 Chaining Events
+## Chaining Events
 
 ```python
 distance.change(update_fare, [distance, travel_class], fare_out) \
         .then(lambda fare: f"Approx ${fare / 83:.2f} USD", fare_out, usd_out)
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `.then(...)` chains a **second** function to run immediately after the first completes, receiving the same event trigger — useful for pipelines (compute fare → then convert currency → then log it) without cramming unrelated logic into one giant function.
 
 ---
 
-## 📝 Try It Yourself
+## Try It Yourself
 
 1. Extend the cart example with a "Clear Cart" button that resets `cart_state` back to `[]` and clears both display outputs.
 2. Use `gr.update(choices=[...])` to make a "Route" dropdown's available "Class" options change dynamically (e.g., a hypothetical express route only offers AC classes, not Sleeper).

@@ -1,6 +1,6 @@
 # 08 — Capstone: Assembling & Deploying the PyRail Gradio App
 
-## 🎯 What You'll Learn
+## What You'll Learn
 - Combining every module into one multi-tab PyRail application
 - Queueing and concurrency for slow functions under real traffic
 - Deployment: Hugging Face Spaces (native home for Gradio) and Docker
@@ -8,13 +8,13 @@
 
 ---
 
-## 📌 The Scenario
+## The Scenario
 
 Every piece is ready: fare calculation, booking form, cart state, ticket photo enhancement, and the support chatbot. This module assembles them into **one PyRail app** with tabs for each feature, and ships it publicly.
 
 ---
 
-## 📁 Final Project Structure
+## Final Project Structure
 
 ```
 pyrail_gradio/
@@ -31,7 +31,7 @@ pyrail_gradio/
 
 ---
 
-## 💻 `logic/fares.py`
+## `logic/fares.py`
 
 ```python
 def calculate_fare(distance_km, travel_class, passengers=1, festival_season=False):
@@ -51,7 +51,7 @@ def calculate_refund(fare, days_before_travel):
     return round(fare * pct, 2)
 ```
 
-## 💻 `app.py` — Assembled Multi-Tab App
+## `app.py` — Assembled Multi-Tab App
 
 ```python
 import gradio as gr
@@ -96,7 +96,7 @@ demo.queue(default_concurrency_limit=5)
 demo.launch()
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - Each tab's logic lives in its own module under `logic/` and is **imported**, not redefined — keeping `app.py` focused purely on layout/wiring, the Gradio equivalent of separating "data loaders" from "pages" in the Streamlit multipage course (Streamlit course, Module 06).
 - `gr.ChatInterface` can be **embedded inside a `gr.Tab`** just like any other component-producing call — it doesn't need to be the only thing in the app; this is a natural extension of the "Interface is just a convenience wrapper around Blocks" idea from Module 03.
@@ -104,7 +104,7 @@ demo.launch()
 
 ---
 
-## 🚀 Deployment Option 1: Hugging Face Spaces (Native Home for Gradio)
+## Deployment Option 1: Hugging Face Spaces (Native Home for Gradio)
 
 Gradio is developed by Hugging Face, and **Spaces** is purpose-built for hosting Gradio apps for free.
 
@@ -121,7 +121,7 @@ Gradio is developed by Hugging Face, and **Spaces** is purpose-built for hosting
 
 ---
 
-## 🚀 Deployment Option 2: Docker
+## Deployment Option 2: Docker
 
 `Dockerfile`:
 
@@ -145,14 +145,14 @@ docker build -t pyrail-gradio .
 docker run -p 7860:7860 pyrail-gradio
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `ENV GRADIO_SERVER_NAME="0.0.0.0"` is the Gradio equivalent of Streamlit's `--server.address=0.0.0.0` (Streamlit course, Module 08) — without it, Gradio binds to `localhost` inside the container by default, making it unreachable from outside.
 - Docker is the right choice when you need infrastructure Spaces doesn't offer (a specific cloud VPC, integration with an existing internal auth system, a non-Hugging-Face cloud provider).
 
 ---
 
-## ✅ Production Checklist
+## Production Checklist
 
 - [ ] `requirements.txt` pins reasonable version ranges (`gradio>=4.0,<5.0`)
 - [ ] `demo.queue(...)` enabled for any app with slow functions (media processing, LLM calls, external APIs)
@@ -163,7 +163,7 @@ docker run -p 7860:7860 pyrail-gradio
 
 ---
 
-## 📝 Try It Yourself
+## Try It Yourself
 
 1. Assemble the full PyRail Gradio app from Modules 02–07 into the structure shown above and confirm every tab works end-to-end.
 2. Add `auth=` to the whole `demo.launch()` call and confirm the entire app (all tabs) is now gated behind login.
@@ -171,4 +171,4 @@ docker run -p 7860:7860 pyrail-gradio
 
 ---
 
-🎉 **Congratulations** — you've gone from "Hello, Gradio" to a fully deployed, multi-tab, themed, queued, authenticated production app, including image processing and a streaming chatbot. From here, the best next step is swapping the rule-based `pyrail_bot` for a real LLM API call, using the streaming pattern from Module 06.
+**Congratulations** — you've gone from "Hello, Gradio" to a fully deployed, multi-tab, themed, queued, authenticated production app, including image processing and a streaming chatbot. From here, the best next step is swapping the rule-based `pyrail_bot` for a real LLM API call, using the streaming pattern from Module 06.

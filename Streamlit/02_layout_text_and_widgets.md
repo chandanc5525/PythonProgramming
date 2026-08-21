@@ -1,19 +1,19 @@
 # 02 — Layout, Text Elements & Core Widgets
 
-## 🎯 What You'll Learn
+## What You'll Learn
 - Structuring a page with columns, containers, sidebars, and tabs
 - Every commonly used input widget and when to reach for it
 - How widget **keys** and **default values** work
 
 ---
 
-## 📌 The Scenario
+## The Scenario
 
 You're building the front page of **PyRail Dashboards** — a booking-analytics tool. The page needs: a sidebar for filters, a title, a couple of KPI numbers side-by-side, and a tabbed view for "Today" vs "This Week" data. Doing this with raw HTML/CSS would take a while; Streamlit gives you layout primitives that map almost 1:1 to these ideas.
 
 ---
 
-## 🧠 Logic: Layout Containers
+## Logic: Layout Containers
 
 Streamlit renders elements **in the order you call them**, top to bottom, in the "main" area — unless you explicitly place them inside a **layout container** (`st.sidebar`, `st.columns`, `st.tabs`, `st.expander`, `st.container`). Containers are just Python context managers or objects you can call methods on — they don't change the rerun model, only *where on the page* something appears.
 
@@ -22,7 +22,7 @@ import streamlit as st
 
 st.set_page_config(page_title="PyRail Dashboards", layout="wide")
 
-st.title("🚆 PyRail Dashboards")
+st.title("PyRail Dashboards")
 
 # --- Sidebar: filters live here, separate from main content ---
 with st.sidebar:
@@ -44,7 +44,7 @@ with tab_week:
     st.write("This week's bookings go here.")
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `st.set_page_config(layout="wide")` **must be the first Streamlit command** in the script — it configures the page shell itself, so Streamlit needs to know about it before rendering anything else.
 - `st.sidebar` can be used either as a context manager (`with st.sidebar:`) or by calling methods directly on it (`st.sidebar.selectbox(...)`) — both produce identical results; the `with` form is preferred when you have several sidebar elements, for readability.
@@ -54,7 +54,7 @@ with tab_week:
 
 ---
 
-## 💻 Core Input Widgets Reference
+## Core Input Widgets Reference
 
 ```python
 import streamlit as st
@@ -83,7 +83,7 @@ if st.button("Search Trains"):
     st.success(f"Searching {travel_class} tickets for {name} on {travel_date}...")
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - **Every widget function returns its current value directly** — there's no `.value` property or event object to unpack, unlike most GUI frameworks. This is possible *because* of the rerun model: by the time this line executes, Streamlit already knows what the user selected from the previous interaction.
 - `st.slider(..., value=(500, 2000))` — passing a **tuple** as the default makes it a *range* slider (two handles) instead of a single-value slider. This overload-by-argument-type pattern is common across Streamlit's API.
@@ -92,7 +92,7 @@ if st.button("Search Trains"):
 
 ---
 
-## 📝 Try It Yourself
+## Try It Yourself
 
 1. Build a "Book a Ticket" page: sidebar for filters (route, class), main area split into two columns — left for passenger details (name, age, gender), right for a fare summary using `st.metric`.
 2. Add an `st.expander("Terms & Conditions")` containing a wall of text, collapsed by default.

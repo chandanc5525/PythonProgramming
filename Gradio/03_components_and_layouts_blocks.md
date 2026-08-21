@@ -1,19 +1,19 @@
 # 03 — Custom Layouts with `gr.Blocks`
 
-## 🎯 What You'll Learn
+## What You'll Learn
 - Why `gr.Interface` eventually runs out of flexibility
 - `gr.Blocks`: rows, columns, tabs, and free-form component placement
 - Explicitly wiring events instead of relying on `Interface`'s auto-wiring
 
 ---
 
-## 📌 The Scenario
+## The Scenario
 
 `gr.Interface` was great for the single-function fare calculator, but PyRail's team now wants a **dashboard-like page**: a booking form on the left, a live-updating summary panel on the right, a separate tab for cancellations, and a button that's independent from the "auto-run on submit" pattern. This requires real layout control — that's `gr.Blocks`.
 
 ---
 
-## 🧠 Logic: `Interface` vs `Blocks`
+## Logic: `Interface` vs `Blocks`
 
 | | `gr.Interface` | `gr.Blocks` |
 |---|---|---|
@@ -26,7 +26,7 @@ The logic: `Interface` is a **convenience wrapper** that generates a `Blocks` la
 
 ---
 
-## 💻 A Two-Column Booking Layout
+## A Two-Column Booking Layout
 
 ```python
 import gradio as gr
@@ -61,7 +61,7 @@ with gr.Blocks(title="PyRail Booking") as demo:
 demo.launch()
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `with gr.Blocks(...) as demo:` opens a **layout context** — every component created inside it is placed into the page in the order declared, similar in spirit to how Streamlit renders top-to-bottom, but here you additionally control the *spatial* arrangement with `Row`/`Column`.
 - `gr.Row()` places its children **side by side**; `gr.Column(scale=2)` inside that row claims twice the horizontal space of a `scale=1` column next to it — this is a flexbox-like proportional sizing system.
@@ -70,7 +70,7 @@ demo.launch()
 
 ---
 
-## 💻 Tabs for Multiple Sections
+## Tabs for Multiple Sections
 
 ```python
 import gradio as gr
@@ -107,7 +107,7 @@ with gr.Blocks(title="PyRail Desk") as demo:
 demo.launch()
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `gr.Tabs()` / `gr.Tab("...")` groups components into switchable panels — like `gr.Blocks` generally, only the components inside the **active** tab are visible, but (similar to Streamlit tabs) all tabs' components exist in the page's DOM from the start; switching tabs is purely a visibility toggle, not a re-instantiation.
 - Chaining `.click()` directly onto `gr.Button("Calculate")` without assigning it to a variable first is valid Python — the button is still created and placed in the layout; you're just skipping giving it a name since nothing else needs to reference it later.
@@ -115,7 +115,7 @@ demo.launch()
 
 ---
 
-## 📝 Try It Yourself
+## Try It Yourself
 
 1. Add a third tab, "Route Lookup," with a `gr.Textbox` for a station name and a `gr.Dataframe` output listing (hardcoded, for now) trains from that station.
 2. Change the booking tab's layout to use `gr.Row()`/`gr.Column()` so the form is on the left and the fare result is on the right, similar to the two-column example.

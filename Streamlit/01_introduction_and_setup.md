@@ -1,6 +1,6 @@
 # 01 — Introduction to Streamlit & Environment Setup
 
-## 🎯 What You'll Learn
+## What You'll Learn
 - What Streamlit is and why it exists
 - How Streamlit's execution model differs from a normal Python script
 - How to install Streamlit and run your first app
@@ -8,7 +8,7 @@
 
 ---
 
-## 📌 The Scenario
+## The Scenario
 
 Imagine you've just finished a data analysis in a Jupyter notebook — some pandas wrangling, a couple of matplotlib charts, maybe a trained scikit-learn model. Your manager says: *"Can you turn this into something the sales team can click through themselves, without touching code?"*
 
@@ -16,7 +16,7 @@ Normally that means learning HTML, CSS, JavaScript, and a backend framework like
 
 ---
 
-## 🧠 The Core Idea (Logic First)
+## The Core Idea (Logic First)
 
 Streamlit apps are **not** event-driven in the way JavaScript apps are (`onClick` handlers, callbacks that mutate a persistent DOM). Instead:
 
@@ -28,7 +28,7 @@ This "rerun model" is the single most important concept in Streamlit. Every late
 
 ---
 
-## 💻 Installation
+## Installation
 
 ```bash
 # Create an isolated environment (recommended)
@@ -46,7 +46,7 @@ streamlit hello
 
 ---
 
-## 💻 Your First App
+## Your First App
 
 Create a file named `app.py`:
 
@@ -78,7 +78,7 @@ Your default browser opens automatically at `http://localhost:8501`.
 
 ---
 
-## 📁 Recommended Project Structure
+## Recommended Project Structure
 
 Even for this course, keep a consistent shape from the start:
 
@@ -99,7 +99,7 @@ pandas
 
 ---
 
-## 📝 Try It Yourself
+## Try It Yourself
 
 1. Modify `app.py` so it also asks for the user's favorite programming language and prints a sentence combining both answers.
 2. Add a second `st.text_input` and observe: does typing in the second box cause the *whole script* to rerun, or just part of it? Add a `print("Script ran!")` statement (visible in your terminal) to confirm.

@@ -1,6 +1,6 @@
 # 08 — Capstone: Assembling & Deploying PyRail Dashboards
 
-## 🎯 What You'll Learn
+## What You'll Learn
 - Pulling every previous module together into one coherent app
 - Managing secrets safely
 - Deployment options: Streamlit Community Cloud, Docker, and a bare server
@@ -8,13 +8,13 @@
 
 ---
 
-## 📌 The Scenario
+## The Scenario
 
 You now have everything: layout, widgets, data display, session state, forms, caching, file I/O, multipage navigation, fragments, and theming. This module assembles those pieces into the final **PyRail Dashboards** app and ships it to the internet.
 
 ---
 
-## 📁 Final Project Structure
+## Final Project Structure
 
 ```
 pyrail_dashboards/
@@ -37,7 +37,7 @@ pyrail_dashboards/
 
 ---
 
-## 💻 `shared/data_loader.py`
+## `shared/data_loader.py`
 
 ```python
 import streamlit as st
@@ -58,13 +58,13 @@ def route_summary(df: pd.DataFrame) -> pd.DataFrame:
     )
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - Splitting **raw load** (`load_bookings`) from **derived computation** (`route_summary`) into two separately-cached functions means changing a filter that only affects the summary doesn't force re-reading the CSV from disk — each cache invalidates independently based on its own arguments.
 
 ---
 
-## 💻 `app.py` — Entry Point
+## `app.py` — Entry Point
 
 ```python
 import streamlit as st
@@ -84,12 +84,12 @@ nav.run()
 
 ---
 
-## 💻 `pages/admin_settings.py` — Using Secrets
+## `pages/admin_settings.py` — Using Secrets
 
 ```python
 import streamlit as st
 
-st.title("⚙️ Admin Settings")
+st.title("Admin Settings")
 
 st.subheader("Live Currency API")
 api_key = st.secrets.get("fx_api_key", "")
@@ -111,7 +111,7 @@ fx_api_key = "your-real-api-key-here"
 db_password = "super-secret-password"
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `st.secrets` reads key/value pairs from `.streamlit/secrets.toml` **locally**, or from the secrets manager built into Streamlit Community Cloud when deployed there — same code, different source, so you never hardcode credentials into a `.py` file that might get committed to Git.
 - `st.cache_data.clear()` (no function reference) clears **every** `@st.cache_data`-backed cache in the whole app, useful as a blunt "reset everything" admin action, as opposed to `some_function.clear()` which only clears that one function's cache (Module 05).
@@ -119,7 +119,7 @@ db_password = "super-secret-password"
 
 ---
 
-## 🚀 Deployment Option 1: Streamlit Community Cloud (Easiest)
+## Deployment Option 1: Streamlit Community Cloud (Easiest)
 
 1. Push your project to a public (or connected private) GitHub repo — including `requirements.txt`, excluding `secrets.toml`.
 2. Go to [share.streamlit.io](https://share.streamlit.io), connect your GitHub account, and pick the repo + `app.py` as the entry point.
@@ -130,7 +130,7 @@ db_password = "super-secret-password"
 
 ---
 
-## 🚀 Deployment Option 2: Docker (Portable, Any Cloud)
+## Deployment Option 2: Docker (Portable, Any Cloud)
 
 `Dockerfile`:
 
@@ -154,7 +154,7 @@ docker build -t pyrail-dashboards .
 docker run -p 8501:8501 --env-file .env pyrail-dashboards
 ```
 
-### 🔍 Logic Behind the Code
+### Logic Behind the Code
 
 - `--server.address=0.0.0.0` is essential inside a container — Streamlit's default (`localhost`) would only accept connections from *inside* the container itself, making the app unreachable from outside. Binding to `0.0.0.0` means "accept connections from any network interface."
 - The `HEALTHCHECK` hits Streamlit's built-in `/_stcore/health` endpoint, which cloud orchestrators (Kubernetes, ECS, etc.) use to know if the container is alive and should keep receiving traffic.
@@ -162,7 +162,7 @@ docker run -p 8501:8501 --env-file .env pyrail-dashboards
 
 ---
 
-## ✅ Production Checklist
+## Production Checklist
 
 - [ ] `requirements.txt` pins reasonable version ranges (`streamlit>=1.30,<2.0`)
 - [ ] No secrets committed to Git — verify `.gitignore` includes `secrets.toml` and `.env`
@@ -173,7 +173,7 @@ docker run -p 8501:8501 --env-file .env pyrail-dashboards
 
 ---
 
-## 📝 Try It Yourself
+## Try It Yourself
 
 1. Assemble the full PyRail Dashboards project from Modules 02–07 into this final structure and confirm every page loads.
 2. Add a simple password gate to the Admin Settings page using `st.text_input(type="password")` compared against `st.secrets["admin_password"]`.
@@ -181,4 +181,4 @@ docker run -p 8501:8501 --env-file .env pyrail-dashboards
 
 ---
 
-🎉 **Congratulations** — you've gone from "Hello, Streamlit" to a fully deployed, multi-page, cached, themed, secrets-aware production app. From here, the best next step is rebuilding one of your own real datasets as a dashboard using this same structure.
+**Congratulations** — you've gone from "Hello, Streamlit" to a fully deployed, multi-page, cached, themed, secrets-aware production app. From here, the best next step is rebuilding one of your own real datasets as a dashboard using this same structure.
