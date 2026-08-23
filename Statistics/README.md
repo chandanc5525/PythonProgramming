@@ -1,6 +1,6 @@
 # Statistics for Data Science & Analytics
 
-A 40-part markdown series covering statistics from first principles through to business problem-solving and decision-making.
+A 40-Lecture Series covering statistics from first principles through to business problem-solving and decision-making.
 
 ## Contents
 
